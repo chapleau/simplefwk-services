@@ -1,0 +1,6 @@
+build/
+lib/
+*.pyc
+python/
+!python/*.i
+*.DS_Store

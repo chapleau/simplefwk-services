@@ -13,7 +13,7 @@ public:
   //prevent delete on bare IIncidentListener pointer
 protected:
 
- ~IIncidentListener(){}
+ virtual ~IIncidentListener(){}
 };
 
 #endif

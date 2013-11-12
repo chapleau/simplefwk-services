@@ -1,3 +1,5 @@
+//inspiration : Gaudi's IncidentSvc !
+
 #include "Services/IIncidentListener.h"
 #include "Services/Incident.h"
 #include "Services/IncidentService.h"
@@ -6,7 +8,7 @@
 
 
 
-IncidentService::IncidentService() : Messaging("IncidentService") {}
+IncidentService::IncidentService() : Messaging("IncidentService"), m_currentIncidentType(0) {}
 
 IncidentService::~IncidentService() {
   //cleanup
@@ -20,7 +22,7 @@ void IncidentService::post_init() {
 
 }
 
-void IncidentService::addListener(IIncidentListener* lis, const std::string& type, int priority) {
+void IncidentService::addListener(IIncidentListener* lis, const std::string& type, int priority, bool single) {
 
 
    ListenerMap::iterator itMap = m_listenerMap.find(type);
@@ -42,38 +44,55 @@ void IncidentService::addListener(IIncidentListener* lis, const std::string& typ
    
    }
    
-   llist->insert(itlist,Listener(lis, priority));
+   llist->insert(itlist,Listener(lis, priority, single));
    
    const INamed * named = dynamic_cast<const INamed*>(lis);
    std::string name = (named) ? named->name() : "unknown";
    
    
-   LOG("Added listener ("+name+") for type "+type+" with priority "<<priority, logINFO);
+   LOG("Added listener ("<<name<<") for type "<<type<<" with priority "<<priority, logINFO);
 
 
 }
 
-//no protection against calling removeListener during a fireIncident..for now.
+
 void IncidentService::removeListener(IIncidentListener* lis, const std::string& type) {
-
-
+    
+    
     ListenerMap::iterator itmap = m_listenerMap.find( type );
     if( itmap == m_listenerMap.end() ) return;
+    
+    
+    const INamed * named = dynamic_cast<const INamed*>(lis);
+    std::string name = (named) ? named->name() : "unknown";
     
     ListenerList* llist = (*itmap).second;
     ListenerList::iterator itlist;
     
+    bool justScheduleForRemoval = ( 0 != m_currentIncidentType ) && (type == *m_currentIncidentType);
+    
     for( itlist = llist->begin(); itlist != llist->end();)
-       if ( (*itlist).iListener == lis || lis == 0) itlist = llist->erase(itlist); // remove from the list now
-       else itlist++;
+        if ( (*itlist).iListener == lis || lis == 0) {
+            if (justScheduleForRemoval) {
+                (itlist++)->singleShot = true; // remove it as soon as it is safe
+                LOG("to be removed: listener ("<<name<<") for type "<<type, logINFO);
+            }
+            else {
+                itlist = llist->erase(itlist); // remove from the list now
+                LOG("Removed listener ("<<name<<") for type "<<type, logINFO);
+            }
+        }
+        else itlist++;
     
     
     if( llist->size() == 0) {
-         delete llist;
-         m_listenerMap.erase(itmap);
+        delete llist;
+        m_listenerMap.erase(itmap);
     }
-
+    
 }
+
+
 
 void IncidentService::fireIncident (const Incident& incident) {
 
@@ -82,6 +101,10 @@ void IncidentService::fireIncident (const Incident& incident) {
    ListenerMap::iterator itmap = m_listenerMap.find(incident.svcType());
    if ( m_listenerMap.end() == itmap ) return;
    
+   
+   //set the current incident so that we don't remove listener now
+   m_currentIncidentType = &(incident.svcType());
+   bool weHaveToCleanUp = false;
    
    ListenerList* llist = (*itmap).second;
    for( auto & listener: *llist) {
@@ -94,7 +117,22 @@ void IncidentService::fireIncident (const Incident& incident) {
          LOG("unknown exception during "<<incident.svcType(), logERROR);
       }
    
+      //keep track of those listeneres that requested to be removed from list
+      weHaveToCleanUp |= listener.singleShot;
    }
+   
+    //perform clean up if necessary
+    if (weHaveToCleanUp) {
+        // remove all the listeners that need to be removed from the list
+        llist->remove_if( listenerToBeRemoved() );
+        // if the list is empty, we can remove it
+        if( llist->size() == 0) {
+            delete llist;
+            m_listenerMap.erase(itmap);
+        }
+    }
+   
+   m_currentIncidentType = 0;
 
 }
 

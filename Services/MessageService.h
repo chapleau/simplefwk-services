@@ -2,8 +2,8 @@
 #include <memory>
  
 #include "Services/log.h"
-#include "Services/IIncidentListener.h"
-#include "Services/IncidentService.h"
+//#include "Services/IIncidentListener.h"
+//#include "Services/IncidentService.h"
 
 #include "Services/singleton.h"
 #include "Services/Messaging.h"
@@ -18,7 +18,9 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 
-class MessageService : public Singleton<MessageService>, public Messaging, virtual public IIncidentListener
+
+
+class MessageService : public Singleton<MessageService>, public Messaging//, virtual public IIncidentListener
 {
   friend class Singleton<MessageService>;
 
@@ -26,7 +28,23 @@ private:
   // Constructeur/destructeur
   MessageService (): Messaging("MessageService") { }
   
-  ~MessageService () {}
+  ~MessageService () {
+      
+     std::ostringstream oss(std::ios_base::app);
+     oss<<"\n---\n Summary: ";
+     for (auto const & names : m_msg_count) {
+         oss<<"\n    "<<names.first<<" : ";
+         for (auto const & levels : names.second)
+            oss<< FILELog::ToString(levels.first)<<" ("<< levels.second<<")  ";
+        
+     }
+     oss<<"\n---";
+  
+     if ( dolog(logINFO) ) Messaging::MSG(oss, logINFO);
+     
+     
+     
+  }
 
 protected:
 
@@ -34,9 +52,10 @@ protected:
      
      //retrieve incident service:
     LOG("in post_init", logINFO);
-    IncidentService * inc_svc = IncidentService::getInstance();
-    if (!inc_svc) return;
-    inc_svc->addListener(this, "EndRun", -1);
+    
+    //IncidentService * inc_svc = IncidentService::getInstance();
+    //if (!inc_svc) return;
+    //inc_svc->addListener(this, "EndRun", -1);
   
   }
 
@@ -57,7 +76,7 @@ public:
   //bool ReportingLevel(TLogLevel level) {return !(level > m_lvl || !Output2FILE::Stream()) ;}
   //void SetReportingLevel(std::string str_level) {m_lvl = FILELog::FromString(str_level);}
   
-  
+  /*
   void handle(const Incident& inc) {
   
      if ( inc.svcType() != IncidentType::EndProcessing ) return;
@@ -81,7 +100,7 @@ public:
      this->kill();
       
   }
-  
+  */
  
   
   

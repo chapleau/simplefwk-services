@@ -16,7 +16,7 @@ friend class Singleton<IncidentService>;
 
 public:
 
-   void addListener(IIncidentListener*, const std::string&, int priority = 0);
+   void addListener(IIncidentListener*, const std::string&, int priority = 0, bool single = false);
    void removeListener(IIncidentListener*, const std::string&);
 
 
@@ -34,8 +34,9 @@ private:
    {
      IIncidentListener* iListener;
      int priority;
+     bool singleShot;
      
-     Listener(IIncidentListener* il, int pri) : iListener(il), priority(pri) {}
+     Listener(IIncidentListener* il, int pri, bool single=false) : iListener(il), priority(pri), singleShot(single) {}
    };
    
    // Typedefs
@@ -44,7 +45,16 @@ private:
 
    ListenerMap  m_listenerMap;
    
+   const std::string *m_currentIncidentType;
    
+   
+   /// Helper class to identify a Listener that have to be removed from a list.
+    struct listenerToBeRemoved{
+        inline bool operator() (const Listener& l) {
+            return l.singleShot;
+        }
+    };
+    
 
    
      IncidentService();

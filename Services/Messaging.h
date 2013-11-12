@@ -24,7 +24,7 @@ protected :
  
  std::ostringstream m_msg_buf;
  
- ~Messaging(){};
+ ~Messaging();
  
  
  protected:
@@ -35,6 +35,7 @@ protected :
    
    bool dolog(TLogLevel lvl) { return lvl <= m_lvl; }
    
+   static bool m_hara_kiri;
    
 private:
 

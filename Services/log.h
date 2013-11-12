@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include "Services/log_levels.h"
 
+
 inline std::string NowTime();
 
 template <typename T>
@@ -35,8 +36,15 @@ private:
 template <typename T>
 std::ostringstream& Log<T>::Get(TLogLevel level)
 {
+
+    std::string color_prefix = "\e[1;92m";
+    if (level == logERROR ) color_prefix = "\e[1;91m";
+    if (level == logWARNING ) color_prefix = "\e[1;93m";
+
+    std::string color_suffix = "\e[0m";
+    
     os << "- " << NowTime();
-    os << " " << ToString(level) << ": ";
+    os << " " << color_prefix<< ToString(level)<<color_suffix << ": ";
     //os << std::string(level > logDEBUG ? level - logDEBUG : 0, '\t');
     return os;
 }
@@ -44,8 +52,14 @@ std::ostringstream& Log<T>::Get(TLogLevel level)
 template <typename T>
 std::ostringstream& Log<T>::Get()
 {
+
+    std::string color_prefix = "\e[1;92m";
+    if (m_lvl == logERROR ) color_prefix = "\e[1;91m";
+    if (m_lvl == logWARNING ) color_prefix = "\e[1;93m";
+
+    std::string color_suffix = "\e[0m";
     os << "- " << NowTime();
-    os << " " << ToString(m_lvl) << ": ";
+    os << " " << color_prefix << ToString(m_lvl) <<color_suffix << ": ";
     return os;
 }
 

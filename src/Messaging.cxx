@@ -1,5 +1,7 @@
 #include "Services/Messaging.h"
 #include "Services/MessageService.h"
+#include <exception>
+#include <stdexcept>
 
 bool Messaging::m_hara_kiri = false;
 
@@ -17,7 +19,13 @@ void Messaging::MSG(std::ostream & buf_stream, TLogLevel level) {
    
    std::shared_ptr<FILELog> thelog_ptr = svc->MSG(level, (const INamed*)this);
    
-   thelog_ptr->Get()<< name()<<" : "<<buf_str;
+   
+   thelog_ptr->Get() << name()  <<" : "<<buf_str;
+   
+   if (level == logERROR) {
+      thelog_ptr.reset(); //so that message is flushed into output stream
+      throw std::runtime_error("MessageService caught an ERROR message");
+   }
    
 }
 

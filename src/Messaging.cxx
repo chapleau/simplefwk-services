@@ -3,7 +3,7 @@
 #include <exception>
 #include <stdexcept>
 
-bool Messaging::m_hara_kiri = false;
+unsigned int Messaging::m_obj_count = 0;
 
 void Messaging::MSG(std::ostream & buf_stream, TLogLevel level) {
 
@@ -31,14 +31,31 @@ void Messaging::MSG(std::ostream & buf_stream, TLogLevel level) {
 
 Messaging::~Messaging() {
 
-   if (!m_hara_kiri) {
-     //important to set this to true now because MessageService inherits from Messaging so this
-     //destructor is called during MessageService::kill()
-     m_hara_kiri = true;
+   m_obj_count--;
 
-     MessageService *  svc = MessageService::getInstance();
-     if (svc) svc->kill();
-     
+   //if one left, it is the Message Service itself !   
+   if (m_obj_count == 1) {
+      
+       MessageService *  svc = MessageService::getInstance();
+       if (svc) svc->kill();
+   
    }
-  
+
 }
+
+Messaging::Messaging(const std::string& n) : m_name(n), m_lvl(logINFO) {
+
+   m_obj_count++;
+   
+}
+
+Messaging::Messaging(const std::string& n, TLogLevel lvl ) : m_name(n), m_lvl(lvl) {
+
+   m_obj_count++;
+}
+
+
+
+
+
+

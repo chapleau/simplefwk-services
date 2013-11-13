@@ -29,13 +29,14 @@ protected :
  
  protected:
  
-   Messaging(const std::string& n) : m_name(n), m_lvl(logINFO) {}
-   Messaging(const std::string& n, TLogLevel lvl ) : m_name(n), m_lvl(lvl) {}
+   Messaging(const std::string& n);
+   Messaging(const std::string& n, TLogLevel lvl );
    std::string m_name;
    
    bool dolog(TLogLevel lvl) { return lvl <= m_lvl; }
    
-   static bool m_hara_kiri;
+   
+   static unsigned int m_obj_count;
    
 private:
 

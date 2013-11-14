@@ -51,7 +51,7 @@ protected:
   void post_init() {
      
      //retrieve incident service:
-    LOG("in post_init", logINFO);
+    LOG("in post_init", logDEBUG);
     
     //IncidentService * inc_svc = IncidentService::getInstance();
     //if (!inc_svc) return;

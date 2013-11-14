@@ -18,7 +18,7 @@ IncidentService::~IncidentService() {
 
 void IncidentService::post_init() {
 
-  LOG("in post_init", logINFO);
+  LOG("in post_init", logDEBUG);
 
 }
 
@@ -50,7 +50,7 @@ void IncidentService::addListener(IIncidentListener* lis, const std::string& typ
    std::string name = (named) ? named->name() : "unknown";
    
    
-   LOG("Added listener ("<<name<<") for type "<<type<<" with priority "<<priority, logINFO);
+   LOG("Added listener ("<<name<<") for type "<<type<<" with priority "<<priority, logDEBUG);
 
 
 }
@@ -75,11 +75,11 @@ void IncidentService::removeListener(IIncidentListener* lis, const std::string& 
         if ( (*itlist).iListener == lis || lis == 0) {
             if (justScheduleForRemoval) {
                 (itlist++)->singleShot = true; // remove it as soon as it is safe
-                LOG("to be removed: listener ("<<name<<") for type "<<type, logINFO);
+                LOG("to be removed: listener ("<<name<<") for type "<<type, logDEBUG);
             }
             else {
                 itlist = llist->erase(itlist); // remove from the list now
-                LOG("Removed listener ("<<name<<") for type "<<type, logINFO);
+                LOG("Removed listener ("<<name<<") for type "<<type, logDEBUG);
             }
         }
         else itlist++;
@@ -96,7 +96,7 @@ void IncidentService::removeListener(IIncidentListener* lis, const std::string& 
 
 void IncidentService::fireIncident (const Incident& incident) {
 
-   LOG("Fireing "+incident.svcType(), logINFO);
+   LOG("Fireing "+incident.svcType(), logDEBUG);
 
    ListenerMap::iterator itmap = m_listenerMap.find(incident.svcType());
    if ( m_listenerMap.end() == itmap ) return;

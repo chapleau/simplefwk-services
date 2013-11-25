@@ -64,16 +64,7 @@ return 0;
 
 will produce the following output:
 
-```
-- 18:09:10.110 INFO: MyToolA : Here's an INFO  message from MyToolA
-- 18:09:10.110 WARNING: MyToolB : Here's a WARNING message from MyToolB
-- 18:09:10.110 INFO: MessageService : 
----
- Summary: 
-    MyToolB : WARNING (1)  
-    MyToolA : INFO (1)  
----
-```
+![Alt console output][msgoutput]
 
 
 
@@ -87,3 +78,4 @@ The Incident Service is a simple implementation of the [observer design pattern]
 [macports]: http://www.macports.org/
 [obs]: http://en.wikipedia.org/wiki/Observer_pattern
 [Gaudi]: http://cern.ch/gaudi
+[msgoutput]: chapleau/simplefwk-services/doc/console.png

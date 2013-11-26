@@ -64,7 +64,7 @@ An error message throws a run time exception by default that is necesary to catc
 
 The Incident Service is a simple implementation of the [observer design pattern] [obs]. It is based on an implementation available in a software framework (known as [Gaudi][]) used for high energy physics experiments. 
 
-The service is implemented as a singleton. Observers (or _listeners_) can register themselves to the incident service for any type of events (or _incidents_). When fireing a particular incident, all registered listeners are notified. Listeners are concrete implementation of the ``IIncidentListener`` interface, e.g.: 
+The service is implemented as a singleton. Observers (or _listeners_) can register themselves to the incident service for any type of events (or _incidents_). When fireing a particular incident, all registered listeners are notified. Listeners are concrete implementations of the ``IIncidentListener`` interface, e.g.: 
 
 ```c++
 #include "Services/Messaging.h"

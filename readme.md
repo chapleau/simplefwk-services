@@ -56,7 +56,7 @@ will produce the following output:
 
 ![Alt console output][msgoutput]
 
-It is also possible to specifify a minimum log level through ``Messaging``'s alternate constructor. 
+It is also possible to specifify a default minimum log level through ``Messaging``'s alternate constructor. 
 
 An error message throws a run time exception by default that is necesary to catch. 
 
@@ -70,7 +70,6 @@ The service is implemented as a singleton. Observers (or _listeners_) can be reg
 #include "Services/Messaging.h"
 #include "Services/IIncidentListener.h"
 #include "Services/IncidentService.h"
-#include <iostream>
 
 class tool : public Messaging, virtual public IIncidentListener {
 
@@ -106,9 +105,13 @@ return 0;
 }
 ```
 
+The above produces the following output:
+
+![Alt console output][incoutput]
 
 [swig]: http://swig.org
 [macports]: http://www.macports.org/
 [obs]: http://en.wikipedia.org/wiki/Observer_pattern
 [Gaudi]: http://cern.ch/gaudi
 [msgoutput]: https://raw.github.com/chapleau/simplefwk-services/master/doc/console.png
+[incoutput]: https://raw.github.com/chapleau/simplefwk-services/master/doc/console_inc.png

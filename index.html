@@ -1,0 +1,154 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Simple framework by chapleau</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Simple framework</h1>
+        <p></p>
+
+        <p class="view"><a href="https://github.com/chapleau/simplefwk-services">View the Project on GitHub <small>chapleau/simplefwk-services</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/chapleau/simplefwk-services/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/chapleau/simplefwk-services/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/chapleau/simplefwk-services">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a name="services" class="anchor" href="#services"><span class="octicon octicon-link"></span></a>Services</h1>
+
+<p><code>simplefwk-services</code> is a small package containing a simple event handling service as well as a lightweight message service that is intended to be used as a message logger. Native C++ interfaces are provided. Python interfaces are also available and automatically generate by <a href="http://swig.org">swig</a>.</p>
+
+<h2>
+<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>A makefile is provided for unix-like operating systems (tested on Mac OS X 10.7.5). Requirements: </p>
+
+<ul>
+<li>C++11 compliant c++ compiler (e.g. g++ 4.8)</li>
+<li>Python 2.x (e.g. version 2.7.1)</li>
+<li>swig 2.x </li>
+</ul><p>All the above can be obtained through <a href="http://www.macports.org/">macports</a> for Max OS X systems.</p>
+
+<h2>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<h3>
+<a name="message-service" class="anchor" href="#message-service"><span class="octicon octicon-link"></span></a>Message Service</h3>
+
+<p>The Message service is implemented as a singleton that outputs formatted text messages to a user defined stream. It keeps track of the number of messages (and levels) that are issued. Classes that require the use of this logging mechanism simply need to inherit from the <code>Messaging</code> class. :</p>
+
+<div class="highlight highlight-c++"><pre><span class="cp">#include "Services/Messaging.h"</span>
+<span class="cp">#include &lt;iostream&gt;</span>
+
+<span class="k">class</span> <span class="nc">tool</span> <span class="o">:</span> <span class="k">public</span> <span class="n">Messaging</span> <span class="p">{</span>
+
+ <span class="nl">public:</span>
+ <span class="c1">// n is name of instance</span>
+ <span class="n">tool</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span> <span class="n">n</span><span class="p">)</span> <span class="o">:</span> <span class="n">Messaging</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="p">{}</span>
+
+ <span class="kt">void</span> <span class="n">foo</span><span class="p">()</span> <span class="p">{</span> <span class="n">LOG</span><span class="p">(</span><span class="s">"Here's an INFO  message from "</span><span class="o">&lt;&lt;</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">name</span><span class="p">(),</span> <span class="n">logINFO</span><span class="p">);</span> <span class="p">}</span>
+ <span class="kt">void</span> <span class="n">bar</span><span class="p">()</span> <span class="p">{</span> <span class="n">LOG</span><span class="p">(</span><span class="s">"Here's a WARNING message from "</span><span class="o">&lt;&lt;</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">name</span><span class="p">(),</span> <span class="n">logWARNING</span><span class="p">);</span> <span class="p">}</span>
+ <span class="kt">void</span> <span class="n">foobar</span><span class="p">()</span> <span class="p">{</span> <span class="n">LOG</span><span class="p">(</span><span class="s">"Here's an ERROR message from "</span><span class="o">&lt;&lt;</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">name</span><span class="p">(),</span> <span class="n">logERROR</span><span class="p">);</span> <span class="p">}</span>
+
+<span class="p">};</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+
+<span class="n">tool</span> <span class="n">mytoolA</span><span class="p">(</span><span class="s">"MyToolA"</span><span class="p">);</span>
+<span class="n">tool</span> <span class="n">mytoolB</span><span class="p">(</span><span class="s">"MyToolB"</span><span class="p">);</span>
+
+<span class="n">mytoolA</span><span class="p">.</span><span class="n">foo</span><span class="p">();</span>
+<span class="n">mytoolB</span><span class="p">.</span><span class="n">bar</span><span class="p">();</span>
+
+<span class="n">try</span> <span class="p">{</span>
+ <span class="n">mytoolA</span><span class="p">.</span><span class="n">foobar</span><span class="p">();</span>
+<span class="p">}</span>
+<span class="k">catch</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">exception</span> <span class="o">&amp;</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+ <span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="o">&lt;&lt;</span><span class="s">"caught exception: "</span><span class="o">&lt;&lt;</span><span class="n">e</span><span class="p">.</span><span class="n">what</span><span class="p">()</span><span class="o">&lt;&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>will produce the following output:</p>
+
+<p><img src="https://raw.github.com/chapleau/simplefwk-services/master/doc/console.png" alt="Alt console output"></p>
+
+<p>It is also possible to specifify a default minimum log level through <code>Messaging</code>'s alternate constructor. </p>
+
+<p>An error message throws a run time exception by default that is necesary to catch. </p>
+
+<h3>
+<a name="incident-service" class="anchor" href="#incident-service"><span class="octicon octicon-link"></span></a>Incident Service</h3>
+
+<p>The Incident Service is a simple implementation of the <a href="http://en.wikipedia.org/wiki/Observer_pattern">observer design pattern</a>. It is based on an implementation available in a software framework (known as <a href="http://cern.ch/gaudi">Gaudi</a>) used in high energy physics experiments. </p>
+
+<p>The service is implemented as a singleton. Observers (or <em>listeners</em>) can be registered to the incident service for any type of events (or <em>incidents</em>). When fireing a particular incident, all registered listeners are notified. Listeners are concrete implementations of the <code>IIncidentListener</code> interface, e.g.: </p>
+
+<div class="highlight highlight-c++"><pre><span class="cp">#include "Services/Messaging.h"</span>
+<span class="cp">#include "Services/IIncidentListener.h"</span>
+<span class="cp">#include "Services/IncidentService.h"</span>
+
+<span class="k">class</span> <span class="nc">tool</span> <span class="o">:</span> <span class="k">public</span> <span class="n">Messaging</span><span class="p">,</span> <span class="k">virtual</span> <span class="k">public</span> <span class="n">IIncidentListener</span> <span class="p">{</span>
+
+ <span class="nl">public:</span>
+ <span class="c1">// n is name of instance</span>
+ <span class="n">tool</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span> <span class="n">n</span><span class="p">)</span> <span class="o">:</span> <span class="n">Messaging</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="p">{}</span>
+ <span class="c1">//concrete implementation</span>
+ <span class="kt">void</span> <span class="n">handle</span><span class="p">(</span><span class="k">const</span> <span class="n">Incident</span><span class="o">&amp;</span> <span class="n">inc</span><span class="p">)</span> <span class="p">{</span> <span class="n">foo</span><span class="p">(</span><span class="n">inc</span><span class="p">.</span><span class="n">svcType</span><span class="p">());</span> <span class="p">}</span>
+
+ <span class="nl">protected:</span> 
+ <span class="kt">void</span> <span class="n">foo</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span> <span class="n">str</span><span class="p">)</span> <span class="p">{</span> <span class="n">LOG</span><span class="p">(</span><span class="s">"Here's an INFO message from incident "</span><span class="o">&lt;&lt;</span><span class="n">str</span><span class="p">,</span> <span class="n">logINFO</span><span class="p">);</span> <span class="p">}</span>
+
+<span class="p">};</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+
+<span class="n">tool</span> <span class="n">mytoolA</span><span class="p">(</span><span class="s">"MyToolA"</span><span class="p">);</span>
+
+<span class="c1">//get an handle on the singleton</span>
+<span class="n">IncidentService</span> <span class="o">*</span> <span class="n">inc_svc</span> <span class="o">=</span> <span class="n">IncidentService</span><span class="o">::</span><span class="n">getInstance</span><span class="p">();</span>
+<span class="c1">//set log level to DEBUG</span>
+<span class="n">inc_svc</span><span class="o">-&gt;</span><span class="n">SetReportingLevel</span><span class="p">(</span><span class="n">logDEBUG</span><span class="p">);</span>
+<span class="c1">//add listeners</span>
+<span class="n">inc_svc</span><span class="o">-&gt;</span><span class="n">addListener</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mytoolA</span><span class="p">,</span> <span class="s">"TestEvent"</span><span class="p">);</span>
+<span class="n">inc_svc</span><span class="o">-&gt;</span><span class="n">addListener</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mytoolA</span><span class="p">,</span> <span class="s">"AnotherTestEvent"</span><span class="p">);</span>
+<span class="c1">//fire!</span>
+<span class="n">inc_svc</span><span class="o">-&gt;</span><span class="n">fireIncident</span><span class="p">(</span><span class="n">Incident</span><span class="p">(</span><span class="s">"TestEvent"</span><span class="p">));</span>
+<span class="n">inc_svc</span><span class="o">-&gt;</span><span class="n">fireIncident</span><span class="p">(</span><span class="n">Incident</span><span class="p">(</span><span class="s">"AnotherTestEvent"</span><span class="p">));</span>
+
+<span class="c1">//clean exit</span>
+<span class="n">inc_svc</span><span class="o">-&gt;</span><span class="n">kill</span><span class="p">();</span>
+<span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>The above produces the following output:</p>
+
+<p><img src="https://raw.github.com/chapleau/simplefwk-services/master/doc/console_inc.png" alt="Alt console output"></p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/chapleau">chapleau</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>

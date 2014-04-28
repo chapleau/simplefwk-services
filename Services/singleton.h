@@ -32,6 +32,8 @@ public:
 
     return (static_cast<T*> (_singleton));
   }
+  
+  static bool isAlive() { return _singleton != NULL; }
 
   static void kill ()
   {

@@ -34,7 +34,7 @@ Messaging::~Messaging() {
    m_obj_count--;
 
    //if one left, it is the Message Service itself !   
-   if (m_obj_count == 1) {
+   if (m_obj_count == 1 && MessageService::isAlive()) {
       
        MessageService *  svc = MessageService::getInstance();
        if (svc) svc->kill();

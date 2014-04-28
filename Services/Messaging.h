@@ -48,4 +48,24 @@ TLogLevel m_lvl;
     if (dolog(level)) Messaging::MSG(Messaging::BUF()<<str, level);
 
 
+//for the python interface
+
+class PyMessaging: virtual public Messaging
+{
+
+public:
+
+   PyMessaging(const std::string& n) : Messaging(n) {} ;
+   PyMessaging(const std::string& n, TLogLevel lvl ) : Messaging(n, lvl) {} ;
+   
+   void PyLOG(const std::string& str, TLogLevel level) {
+       //catch exception
+       try {
+         if (dolog(level)) Messaging::MSG(Messaging::BUF()<<str, level);
+       }
+       catch(const std::exception&) {}
+   }
+   
+};
+
 #endif

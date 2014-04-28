@@ -16,4 +16,18 @@ protected:
  virtual ~IIncidentListener(){}
 };
 
+//python interface
+
+class PyIIncidentListener: virtual public IIncidentListener {
+
+public:
+
+ //no-op
+ virtual void handle(const Incident&) {};
+
+ virtual ~PyIIncidentListener(){}
+
+};
+
+
 #endif

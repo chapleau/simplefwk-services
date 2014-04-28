@@ -15,7 +15,7 @@ public :
 //cannot delete from instance of INamed
 protected :
 
- ~INamed() {}
+ virtual ~INamed() {}
 
 
 };

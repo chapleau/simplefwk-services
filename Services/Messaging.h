@@ -58,12 +58,12 @@ public:
    PyMessaging(const std::string& n) : Messaging(n) {} ;
    PyMessaging(const std::string& n, TLogLevel lvl ) : Messaging(n, lvl) {} ;
    
-   void PyLOG(const std::string& str, TLogLevel level) {
+   void PyLOG(const std::string& str, TLogLevel level, bool re_throw = false) {
        //catch exception
        try {
          if (dolog(level)) Messaging::MSG(Messaging::BUF()<<str, level);
        }
-       catch(const std::exception&) {}
+       catch(...) { if (re_throw) throw; }
    }
    
 };

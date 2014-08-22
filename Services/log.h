@@ -143,6 +143,7 @@ public:
     else FILELog().Get(level)
 
 #include <sys/time.h>
+#include <cstring>
 
 inline std::string NowTime()
 {
@@ -150,7 +151,13 @@ inline std::string NowTime()
     time_t t;
     time(&t);
     tm r = {0};
-    strftime(buffer, sizeof(buffer), "%X", localtime_r(&t, &r));
+    std::size_t res_t = strftime(buffer, sizeof(buffer), "%X", localtime_r(&t, &r));
+    if (!res_t) {
+       char * ti = ctime(&t); 
+       strncpy(buffer, ti+11, 8);
+       buffer[8]  ='\0';
+    }
+
     struct timeval tv;
     gettimeofday(&tv, 0);
     char result[100] = {0};

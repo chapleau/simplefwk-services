@@ -1,6 +1,7 @@
 %module Messaging
 %{
 #include "Services/Messaging.h"
+#include "Services/MessageService.h"
 %}
 
 %include "std_string.i"
@@ -33,4 +34,19 @@ public:
    PyMessaging(const std::string&, TLogLevel);
    
    void PyLOG(const std::string&, TLogLevel, bool re_throw = false);
+};
+
+
+class MessageService {
+
+  public:
+
+    static MessageService *getInstance ();
+    void SetReportingLevel(TLogLevel);
+
+  private:
+     MessageService();
+     ~MessageService();     
+
+
 };
